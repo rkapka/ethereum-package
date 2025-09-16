@@ -57,6 +57,7 @@ get_prefunded_accounts = import_module(
     "./src/prefunded_accounts/get_prefunded_accounts.star"
 )
 spamoor = import_module("./src/spamoor/spamoor.star")
+mirror = import_module("./src/mirror/mirror_launcher.star")
 
 GRAFANA_USER = "admin"
 GRAFANA_PASSWORD = "admin"
@@ -101,6 +102,7 @@ def run(plan, args={}):
     keymanager_enabled = args_with_right_defaults.keymanager_enabled
     apache_port = args_with_right_defaults.apache_port
     nginx_port = args_with_right_defaults.nginx_port
+    mirror_port = args_with_right_defaults.mirror_port
     docker_cache_params = args_with_right_defaults.docker_cache_params
     detected_backend = plan.get_cluster_type()
 
@@ -805,6 +807,21 @@ def run(plan, args={}):
                 index,
                 osaka_time,
             )
+        # elif additional_service == "mirror":
+        #     plan.print("Launching mirror middleware")
+        #     mirror_params = args_with_right_defaults.mirror_params
+        #     mirror.launch_mirror(
+        #         plan,
+        #         mirror_port,
+        #         all_participants,
+        #         args_with_right_defaults.participants,
+        #         mirror_params,
+        #         args_with_right_defaults.port_publisher,
+        #         index,
+        #         global_node_selectors,
+        #         global_tolerations,
+        #         args_with_right_defaults.docker_cache_params,
+        #     )
         else:
             fail("Invalid additional service %s" % (additional_service))
     if launch_prometheus_grafana:

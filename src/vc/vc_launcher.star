@@ -36,6 +36,8 @@ def get_vc_config(
     network_params,
     port_publisher,
     vc_index,
+    mirror_ip_addr,
+    mirror_port,
     extra_files_artifacts,
 ):
     if node_keystore_files == None:
@@ -53,9 +55,14 @@ def get_vc_config(
             snooper_beacon_context.beacon_rpc_port_num,
         )
     else:
-        beacon_http_url = "{0}".format(
-            cl_context.beacon_http_url,
-        )
+        if vc_index == 0:
+            beacon_http_url = "http://{0}:{1}".format(
+                mirror_ip_addr, mirror_port
+            )
+        else:
+            beacon_http_url = "{0}".format(
+                cl_context.beacon_http_url,
+            )
 
     keymanager_enabled = participant.keymanager_enabled
     if vc_type == constants.VC_TYPE.lighthouse:

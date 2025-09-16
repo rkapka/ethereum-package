@@ -83,6 +83,7 @@ ATTR_TO_BE_SKIPPED_AT_ROOT = (
     "xatu_sentry_params",
     "port_publisher",
     "spamoor_params",
+    "mirror_params",
 )
 
 
@@ -117,6 +118,7 @@ def input_parser(plan, input_args):
     result["global_node_selectors"] = {}
     result["port_publisher"] = get_port_publisher_params("default")
     result["spamoor_params"] = get_default_spamoor_params()
+    result["mirror_params"] = get_default_mirror_params()
 
     if constants.NETWORK_NAME.shadowfork in result["network_params"]["network"]:
         shadow_base = result["network_params"]["network"].split("-shadowfork")[0]
@@ -190,6 +192,10 @@ def input_parser(plan, input_args):
             for sub_attr in input_args["ethereum_genesis_generator_params"]:
                 sub_value = input_args["ethereum_genesis_generator_params"][sub_attr]
                 result["ethereum_genesis_generator_params"][sub_attr] = sub_value
+        elif attr == "mirror_params":
+            for sub_attr in input_args["mirror_params"]:
+                sub_value = input_args["mirror_params"][sub_attr]
+                result["mirror_params"][sub_attr] = sub_value
 
     if result.get("disable_peer_scoring"):
         result = enrich_disable_peer_scoring(result)
@@ -615,6 +621,7 @@ def input_parser(plan, input_args):
         ),
         apache_port=result["apache_port"],
         nginx_port=result["nginx_port"],
+        mirror_port=result["mirror_port"],
         assertoor_params=struct(
             image=result["assertoor_params"]["image"],
             run_stability_check=result["assertoor_params"]["run_stability_check"],
@@ -706,6 +713,9 @@ def input_parser(plan, input_args):
                 "public_port_start"
             ],
             other_nat_exit_ip=result["port_publisher"]["other"]["nat_exit_ip"],
+        ),
+        mirror_params=struct(
+            image=result["mirror_params"]["image"],
         ),
     )
 
@@ -1121,6 +1131,7 @@ def default_input_args(input_args):
         "xatu_sentry_enabled": False,
         "apache_port": None,
         "nginx_port": None,
+        "mirror_port": None,
         "global_tolerations": [],
         "global_node_selectors": {},
         "use_remote_signer": False,
@@ -1589,6 +1600,11 @@ def get_default_spamoor_params():
         ],
     }
 
+def get_default_mirror_params():
+    return {
+        "image": ""
+    }
+
 
 def get_default_custom_flood_params():
     # this is a simple script that increases the balance of the coinbase address at a cadence
@@ -1829,6 +1845,7 @@ def docker_cache_image_override(plan, result):
         "tempo_params.image",
         "spamoor_params.image",
         "ethereum_genesis_generator_params.image",
+        "mirror_params.image",
     ]
 
     if result["docker_cache_params"]["url"] == "":

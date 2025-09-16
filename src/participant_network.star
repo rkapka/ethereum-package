@@ -31,6 +31,7 @@ remote_signer = import_module("./remote_signer/remote_signer_launcher.star")
 beacon_snooper = import_module("./snooper/snooper_beacon_launcher.star")
 snooper_el_launcher = import_module("./snooper/snooper_el_launcher.star")
 blobber_launcher = import_module("./blobber/blobber_launcher.star")
+mirror_launcher = import_module("./mirror/mirror_launcher.star")
 cl_context_module = import_module("./cl/cl_context.star")
 
 
@@ -249,6 +250,20 @@ def launch_participant_network(
             validator_keystore_files_artifact_uuid=cl_context.validator_keystore_files_artifact_uuid,
             supernode=cl_context.supernode,
         )
+
+    mirror_ip_addr = mirror_launcher.launch_mirror(
+        plan,
+        args_with_right_defaults.participants,
+        all_cl_contexts,
+        args_with_right_defaults.mirror_port,
+        args_with_right_defaults.mirror_params,
+        args_with_right_defaults.port_publisher,
+        global_other_index,
+        # node_selectors,
+        global_tolerations,
+        args_with_right_defaults.docker_cache_params,
+    )
+    global_other_index += 1
 
     ethereum_metrics_exporter_context = None
     all_ethereum_metrics_exporter_contexts = []
@@ -487,6 +502,8 @@ def launch_participant_network(
             network_params=network_params,
             port_publisher=args_with_right_defaults.port_publisher,
             vc_index=current_vc_index,
+            mirror_ip_addr=mirror_ip_addr,
+            mirror_port=args_with_right_defaults.mirror_port,
             extra_files_artifacts=extra_files_artifacts,
         )
         if vc_service_config == None:

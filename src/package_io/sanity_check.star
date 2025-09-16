@@ -360,6 +360,9 @@ SUBCATEGORY_PARAMS = {
     "ethereum_genesis_generator_params": [
         "image",
     ],
+    "mirror_params": [
+        "image",
+    ],
 }
 
 ADDITIONAL_SERVICES_PARAMS = [
@@ -383,6 +386,7 @@ ADDITIONAL_SERVICES_PARAMS = [
     "nginx",
     "tracoor",
     "spamoor",
+    "mirror",
 ]
 
 ADDITIONAL_CATEGORY_PARAMS = {
@@ -397,6 +401,7 @@ ADDITIONAL_CATEGORY_PARAMS = {
     "xatu_sentry_enabled": "",
     "apache_port": "",
     "nginx_port": "",
+    "mirror_port": "",
     "global_tolerations": "",
     "global_node_selectors": "",
     "keymanager_enabled": "",
